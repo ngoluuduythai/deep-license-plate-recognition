@@ -8,19 +8,21 @@ import os
 from datetime import datetime
 from threading import Thread
 
+
 import cv2
 import requests
 from PIL import Image
+import petro_backend
 
-os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;udp"
+#os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;udp"
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description=
-        'Read license plates from a RTSP stream and save the result in a CSV file.',
+        'Commented - Read license plates from a RTSP stream and save the result in a CSV file.',
         epilog=
-        'For example: python anpr_camera_stream.py --camera rtsp://admin:123abc456@minhtuanvt2019.ddns.net:554/Streaming/channels/101 --api-key 61f6ac27c3d2584e6d0ffd33a98de4a94fcb33ed --regions vn --output /path/to/output.csv'
+        'Commented - For example: python anpr_camera_stream.py --camera rtsp://admin:123abc456@minhtuanvt2019.ddns.net:554/Streaming/channels/101 --api-key 61f6ac27c3d2584e6d0ffd33a98de4a94fcb33ed --regions vn --output /path/to/output.csv'
     )
     parser.add_argument('--api-key', help='Your API key.', required=True)
     parser.add_argument('--camera', help='RTSP stream url.', required=True)
@@ -30,12 +32,14 @@ def parse_arguments():
     return parser.parse_args()
 
 def startVideoCap(args):
+    print("All args: %s" % args)
+    print("Camera url: %s" % args.camera)
     cap = cv2.VideoCapture(args.camera)
 
     if not cap.isOpened():
         print(" @ Error: OpenCV VideoCapture is not opened : {}".format(args.camera))
         return False
-
+    print(cap)
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
     fps = cap.get(5)

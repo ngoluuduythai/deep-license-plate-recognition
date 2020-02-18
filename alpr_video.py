@@ -33,6 +33,15 @@ def main():
     args = parse_arguments()
     result = []
     cap = cv2.VideoCapture(args.FILE)
+    print(cap)
+    frame_width = int(cap.get(3))
+    frame_height = int(cap.get(4))
+    fps = cap.get(5)
+    #camera_id = args.camera.rsplit('/', 1)[1] + '_'    
+    #print(camera_id)
+    print(" # ({:d} x {:d}) @ {:5.2f} Hz".
+                         format(frame_width, frame_height, fps))
+
     frame_id = 0
     while (cap.isOpened()):
         ret, frame = cap.read()
