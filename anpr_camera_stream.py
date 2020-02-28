@@ -11,6 +11,13 @@ from threading import Thread
 import cv2
 import requests
 from PIL import Image
+import petro_backend
+
+import time
+#import datetime
+ 
+
+
 
 # os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;udp"
 
@@ -30,6 +37,8 @@ def parse_arguments():
     return parser.parse_args()
 
 def startVideoCap(args):
+    currentDT = datetime.now()
+    print("%s Start video capture " % str(currentDT))
     cap = cv2.VideoCapture(args.camera)
 
     if not cap.isOpened():
@@ -39,6 +48,10 @@ def startVideoCap(args):
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
     fps = cap.get(5)
+    Codec = cap.get(6)
+    NumOfFrames = cap.get(7) #CAP_PROP_FRAME_COUNT
+    print('Num of frames: %d, Codec: %s' % (NumOfFrames, Codec))
+   
     camera_id = args.camera.rsplit('/', 1)[1] + '_'    
     print(camera_id)
     print(" # {} : ({:d} x {:d}) @ {:5.2f} Hz".
@@ -48,14 +61,17 @@ def startVideoCap(args):
         fields = ['date', 'license_plate', 'score', 'dscore', 'vehicle_type']
         writer = csv.DictWriter(output, fieldnames=fields)
         writer.writeheader()
-        while(cap.isOpened()):
-            
+        if (cap.isOpened()):
+        #while(cap.isOpened()):
+            print('still cap.isOpened')
             ret, frame = cap.read()
+            #print('ret: %s, frame: %s' % (ret, frame))
+            print('ret: %s' % (ret))
             imgByteArr = io.BytesIO()
-            if (frame is None):
-                startVideoCap(args)
-                print("xxx None")
-                continue
+            # if (frame is None):
+            #     startVideoCap(args)
+            #     print("xxx None")
+            #     continue
             print("xxx else")
 
             im = Image.fromarray(frame)
@@ -84,10 +100,18 @@ def startVideoCap(args):
                         print(data)
                         writer.writerow(data)
                         output.flush()
+        
         cap.release()
-        cv2.destroyAllWindows() 
+        cv2.destroyAllWindows()
+        print("Start sleeping 10 seconds %s" % str(datetime.now()))
+        time.sleep(10)
+        print("Sleeped 10 seconds %s" % str(datetime.now()))
+        startVideoCap(args)
 
 def main():
+    #print("main petro_backend 2")
+    #petro_backend.main()
+    #petro_backend.fetch_camera()
     args = parse_arguments()
     startVideoCap(args)
    
